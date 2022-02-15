@@ -6,15 +6,15 @@ import java.util.Random;
 
 public class Panel extends JPanel {
 
-    static final int width = 900;
-    static final int height = 900;
+    static final int width = 500;
+    static final int height = 500;
 
     static int size = 10;
     
     static int x = 0;
     static int y = 0;
 
-    static int length = width/size;
+    static int length = width/size-50/size;
     static int[] arr;
 
     static int bubbleIndex = 0;
@@ -34,7 +34,12 @@ public class Panel extends JPanel {
         this.setPreferredSize(new Dimension(width, height));
         this.setFocusable(true);
         this.addKeyListener(new keyAdapter());
+
         newArray();
+    }
+
+    public int newLength() {
+        return width/size-50/size;
     }
 
     public void newArray() {
@@ -72,7 +77,7 @@ public class Panel extends JPanel {
             if(i < colorIndex+1 && checkSort(arr)) {
                 g.setColor(gradGreen[i%3]);
             }
-            g.fillRect(i*size, height-arr[i]*size, size, size*arr[i]);
+            g.fillRect(i*size+25, height-arr[i]*size, size, size*arr[i]);
         }
     }
     
@@ -164,7 +169,7 @@ public class Panel extends JPanel {
                     if(size < 50) {
                         if(!isRunning) {
                             size++;
-                            length = width/size;
+                            length = width/size-50/size;
                             newArray();
                             repaint();
                         }
@@ -174,7 +179,7 @@ public class Panel extends JPanel {
                     if(size > 1) {
                         if(!isRunning) {
                             size--;
-                            length = width/size;
+                            length = width/size-50/size;
                             newArray();
                             repaint();
                         }
