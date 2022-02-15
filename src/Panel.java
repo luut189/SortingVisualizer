@@ -69,7 +69,7 @@ public class Panel extends JPanel {
             } else if(i == compareBubble+1) {
                 g.setColor(Color.green);
             }
-            if(i < colorIndex+1) {
+            if(i < colorIndex+1 && checkSort(arr)) {
                 g.setColor(gradGreen[i%3]);
             }
             g.fillRect(i*size, height-arr[i]*size, size, size*arr[i]);
@@ -118,6 +118,7 @@ public class Panel extends JPanel {
 
         compareBubble = 0;
         bubbleIndex = 0;
+        colorIndex = -1;
         Timer bubble = new Timer(0, new ActionListener() {
 
             @Override
