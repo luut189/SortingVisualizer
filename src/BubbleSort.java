@@ -9,10 +9,12 @@ public class BubbleSort extends Sort {
     public static int[] swapBubble(int[] arr) {
         pitch = arr.length % 100;
         if(arr[compareIndex] > arr[compareIndex+1]) {
-            try {
-                Sound.tone(arr[compareIndex]*pitch, 10);
-            } catch (LineUnavailableException e) {
-                e.printStackTrace();
+            if(Panel.hasSound) {
+                try {
+                    Sound.tone(arr[compareIndex]*pitch, 10);
+                } catch (LineUnavailableException e) {
+                    e.printStackTrace();
+                }
             }
             swap(arr, compareIndex, compareIndex+1);
         }

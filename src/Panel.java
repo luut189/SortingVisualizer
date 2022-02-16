@@ -23,24 +23,35 @@ public class Panel extends JPanel {
     static boolean isSorted = false;
     static boolean isRunning = false;
 
+    static boolean hasSound = true;
+
     static boolean isBubble = false, isInsertion = false;
 
     static final int delay = 60;
 
     static Random rand = new Random();
 
-    static JTextField currentSort = new JTextField("No algorithm is being used!");
+    JPanel textPanel = new JPanel();
+    static JLabel currentSort = new JLabel("No algorithm is being used!");
+    static JLabel soundStatus = new JLabel("Sound: Enable");
 
     Panel(int height) {
         this.height = height;
         this.setPreferredSize(new Dimension(width, height));
         this.setFocusable(true);
+        this.setLayout(new BorderLayout());
         this.addKeyListener(new keyAdapter());
-
-        this.add(currentSort);
-        currentSort.setFont(new Font("Nunito", Font.BOLD, 20));
-        currentSort.setHorizontalAlignment(JTextField.CENTER);
-        currentSort.setEditable(false);
+        
+        textPanel.setLayout(new GridLayout(2,1));
+        this.add(textPanel, BorderLayout.NORTH);
+        
+        currentSort.setFont(new Font("Nunito", Font.BOLD, 14));
+        currentSort.setFocusable(false);
+        textPanel.add(currentSort);
+        
+        soundStatus.setFont(new Font("Nunito", Font.BOLD, 14));
+        soundStatus.setFocusable(false);
+        textPanel.add(soundStatus);
 
         newArray();
     }
@@ -101,10 +112,12 @@ public class Panel extends JPanel {
                     ((Timer) e.getSource()).stop();
                 } else {
                     colorIndex++;
-                    try {
-                        Sound.tone(arr[colorIndex]*50, 10);
-                    } catch (LineUnavailableException e1) {
-                        e1.printStackTrace();
+                    if(hasSound) {
+                        try {
+                            Sound.tone(arr[colorIndex]*(arr.length%100), 10);
+                        } catch (LineUnavailableException e1) {
+                            e1.printStackTrace();
+                        }
                     }
                     repaint();
                 }
@@ -132,7 +145,7 @@ public class Panel extends JPanel {
                         BubbleSort.compareIndex = Integer.MAX_VALUE;
                         isRunning = false;
                         changeColor();
-                        currentSort.setText("The array has been sorted");;
+                        currentSort.setText("Finished");;
                         ((Timer)e.getSource()).stop();
                     } else if(isBubble) {
                         if(isRunning) arr = BubbleSort.swapBubble(arr);
@@ -153,7 +166,7 @@ public class Panel extends JPanel {
                         InsertionSort.startOfIteration = false;
                         isRunning = false;
                         changeColor();
-                        currentSort.setText("The array has been sorted");;
+                        currentSort.setText("Finished");;
                         ((Timer) e.getSource()).stop();
                     } else if(isInsertion) {
                         if(isRunning)  arr = InsertionSort.swapInsertion(arr);
@@ -182,6 +195,11 @@ public class Panel extends JPanel {
                     isRunning = !isRunning;
                     break;
                 case KeyEvent.VK_R:
+                    if(isBubble) {
+                        currentSort.setText("Bubble Sort is running");
+                    } else if(isInsertion) {
+                        currentSort.setText("Insertion Sort is running");
+                    }
                     if(!isRunning) {
                         sort();
                     }
@@ -189,6 +207,14 @@ public class Panel extends JPanel {
                 case KeyEvent.VK_SPACE:
                     newArray();
                     repaint();
+                    break;
+                case KeyEvent.VK_E:
+                    hasSound = !hasSound;
+                    if(hasSound) {
+                        soundStatus.setText("Sound: Enable");
+                    } else {
+                        soundStatus.setText("Sound: Disable");
+                    }
                     break;
                 case KeyEvent.VK_S:
                     if(size < 50) {

@@ -17,10 +17,12 @@ public class InsertionSort extends Sort {
         }
 
         if (compareIndex >= 0 && arr[compareIndex] > key) {
-            try {
-                Sound.tone(arr[arrayIndex]*pitch, 10);
-            } catch (LineUnavailableException e) {
-                e.printStackTrace();
+            if(Panel.hasSound) {
+                try {
+                    Sound.tone(arr[compareIndex]*pitch, 10);
+                } catch (LineUnavailableException e) {
+                    e.printStackTrace();
+                }
             }
             arr[compareIndex + 1] = arr[compareIndex];
             compareIndex--;
