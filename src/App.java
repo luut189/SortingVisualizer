@@ -1,5 +1,5 @@
 public class App {
     public static void main(String[] args) throws Exception {
-        new Frame("Sorting Visualizer");
+        new Frame("Sorting Visualizer", 500);
     }
 }
