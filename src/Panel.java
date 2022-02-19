@@ -25,7 +25,7 @@ public class Panel extends JPanel {
 
     static boolean hasSound = true;
 
-    static boolean isBubble = false, isInsertion = false;
+    static boolean isBubble = false, isInsertion = false, isShuffling = false;
 
     static final int delay = 60;
 
@@ -53,15 +53,56 @@ public class Panel extends JPanel {
         soundStatus.setFocusable(false);
         textPanel.add(soundStatus);
 
-        newArray();
+        createArray();
     }
 
-    public void newArray() {
+    public void createArray() {
         arr = new int[length];
         for(int i = 0; i < length; i++) {
-            arr[i] = rand.nextInt((length-1))+1;
+            arr[i] = i;
         }
         repaint();
+    }
+    
+    static int index = 0;
+    static int randomIndex = Integer.MAX_VALUE;
+    public void newArray() {
+        index = 0;
+        isShuffling = true;
+        Timer shuffle = new Timer(0, new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if(index < length) arr = shuffle(arr);
+                else {
+                    ((Timer) e.getSource()).stop();
+                    randomIndex = Integer.MAX_VALUE;
+                    isShuffling = false;
+                    currentSort.setText("Shuffled");
+                }
+                repaint();
+            }
+
+        });
+        shuffle.start();
+    }
+
+    public int[] shuffle(int[] arr) {
+        randomIndex = rand.nextInt(arr.length);
+        int temp = arr[randomIndex];
+        arr[randomIndex] = arr[index];
+        arr[index] = temp;
+
+        if(hasSound) {
+            try {
+                Sound.tone(arr[randomIndex]*(arr.length%100), 1);
+            } catch (LineUnavailableException e) {
+                e.printStackTrace();
+            }
+        }
+
+        index++;
+        return arr;
     }
 
     public void paintComponent(Graphics g) {
@@ -83,11 +124,17 @@ public class Panel extends JPanel {
 
         for(int i = 0; i < length; i++) {
             g.setColor(grad[i%3]);
-            if(isBubble || isInsertion) {
+            if((isBubble || isInsertion) && !isShuffling) {
                 if(i == BubbleSort.compareIndex || i == InsertionSort.arrayIndex) {
                     g.setColor(Color.red);
                 } else if(i == BubbleSort.compareIndex+1 || i == InsertionSort.compareIndex) {
                     g.setColor(Color.green);
+                }
+            } else if(isShuffling) {
+                if(i == Panel.index) {
+                    g.setColor(Color.cyan);
+                } else if(i == Panel.randomIndex) {
+                    g.setColor(Color.magenta);
                 }
             }
             if(i < colorIndex+1 && checkSort(arr)) {
@@ -114,7 +161,7 @@ public class Panel extends JPanel {
                     colorIndex++;
                     if(hasSound) {
                         try {
-                            Sound.tone(arr[colorIndex]*(arr.length%100), 10);
+                            Sound.tone(arr[colorIndex]*(arr.length%100), 1);
                         } catch (LineUnavailableException e1) {
                             e1.printStackTrace();
                         }
@@ -197,15 +244,23 @@ public class Panel extends JPanel {
                 case KeyEvent.VK_R:
                     if(isBubble) {
                         currentSort.setText("Bubble Sort is running");
+                        if(!isRunning && !isShuffling) {
+                            sort();
+                        }
                     } else if(isInsertion) {
                         currentSort.setText("Insertion Sort is running");
-                    }
-                    if(!isRunning) {
-                        sort();
+                        if(!isRunning && !isShuffling) {
+                            sort();
+                        }
+                    } else {
+                        currentSort.setText("No algorithm was choosen");
                     }
                     break;
                 case KeyEvent.VK_SPACE:
                     newArray();
+                    if(isShuffling) {
+                        currentSort.setText("Shuffling...");
+                    }
                     repaint();
                     break;
                 case KeyEvent.VK_E:
@@ -218,33 +273,35 @@ public class Panel extends JPanel {
                     break;
                 case KeyEvent.VK_S:
                     if(size < 50) {
-                        if(!isRunning) {
+                        if(!isRunning && !isShuffling) {
                             size++;
+                            colorIndex = -1;
                             length = width/size-50/size;
-                            newArray();
+                            createArray();
                             repaint();
                         }
                     }
                     break;
                 case KeyEvent.VK_W:
                     if(size > 1) {
-                        if(!isRunning) {
+                        if(!isRunning && !isShuffling) {
+                            colorIndex = -1;
                             size--;
                             length = width/size-50/size;
-                            newArray();
+                            createArray();
                             repaint();
                         }
                     }
                     break;
                 case KeyEvent.VK_1:
-                    if(!isRunning) {
+                    if(!isRunning && !isShuffling) {
                         isBubble = true;
                         isInsertion = false;
                         currentSort.setText("Bubble Sort is running");
                     }
                     break;
                 case KeyEvent.VK_2:
-                    if(!isRunning) {
+                    if(!isRunning && !isShuffling) {
                         isInsertion = true;
                         isBubble = false;
                         currentSort.setText("Insertion Sort is running");

@@ -11,7 +11,7 @@ public class BubbleSort extends Sort {
         if(arr[compareIndex] > arr[compareIndex+1]) {
             if(Panel.hasSound) {
                 try {
-                    Sound.tone(arr[compareIndex]*pitch, 10);
+                    Sound.tone(arr[compareIndex]*pitch, 1);
                 } catch (LineUnavailableException e) {
                     e.printStackTrace();
                 }

@@ -33,7 +33,7 @@ public class Frame extends JFrame {
         
         keybind = new JTextArea("R - Start sorting\n" + 
                                 "Q - Pause\n" +
-                                "Space - Get new array\n" +
+                                "Space - Shuffle the array\n" +
                                 "E - Enable/Disable sound\n" +
                                 "W - Increase array\' length\n" +
                                 "S - Decrease array\' length\n");

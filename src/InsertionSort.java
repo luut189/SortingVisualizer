@@ -10,7 +10,7 @@ public class InsertionSort extends Sort {
     public static int[] swapInsertion(int[] arr) {
         pitch = arr.length % 100;
 
-        if (startOfIteration == false) {
+        if (!startOfIteration) {
             key = arr[arrayIndex];
             compareIndex = arrayIndex - 1;
             startOfIteration = true;
@@ -19,7 +19,7 @@ public class InsertionSort extends Sort {
         if (compareIndex >= 0 && arr[compareIndex] > key) {
             if(Panel.hasSound) {
                 try {
-                    Sound.tone(arr[compareIndex]*pitch, 10);
+                    Sound.tone(arr[compareIndex]*pitch, 1);
                 } catch (LineUnavailableException e) {
                     e.printStackTrace();
                 }
